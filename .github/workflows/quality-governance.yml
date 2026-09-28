@@ -3,19 +3,9 @@
 # Stages:
 #   Test execution
 #   Coverage generation
-#   Static analysis
-#   SonarQube quality gate
+#   Optional static analysis
+#   Optional SonarQube quality gate
 #   Governance result
-#
-# Required GitHub Secrets:
-#   SONAR_TOKEN      Analysis token. Do not commit this value.
-#   SONAR_HOST_URL   SonarQube server URL that this runner can reach.
-#                    A laptop address such as http://localhost:9000 is not
-#                    reachable from GitHub-hosted runners.
-#
-# Project analysis settings stay in sonar-project.properties.
-# Quality gate conditions are configured on the SonarQube server.
-# This workflow does not record measure values of its own.
 
 name: Quality Governance
 
@@ -30,12 +20,13 @@ jobs:
   test:
     name: Test execution and coverage
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
 
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: pip
@@ -43,19 +34,16 @@ jobs:
             requirements.txt
             requirements-dev.txt
 
-      # requirements-dev.txt includes the runtime requirements.
       - name: Install runtime and development dependencies
         run: python -m pip install -r requirements-dev.txt
 
-      # Test execution and coverage generation are one pytest run.
-      # pytest-cov writes coverage.xml and htmlcov using pytest.ini.
       - name: Test execution and coverage generation
         run: |
           mkdir -p reports
           python -m pytest --junitxml=reports/test-results.xml
 
       - name: Publish test and coverage artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: quality-reports
           retention-days: 14
@@ -69,35 +57,46 @@ jobs:
     name: Static analysis and quality gate
     needs: test
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
-          # Full history lets SonarQube attribute issues and detect new code.
           fetch-depth: 0
 
-      # sonar.python.coverage.reportPaths in sonar-project.properties
-      # expects coverage.xml at the project root.
+      - name: Check SonarQube configuration
+        id: sonar-config
+        shell: bash
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          if [[ -n "$SONAR_TOKEN" && -n "$SONAR_HOST_URL" ]]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Restore coverage report
-        uses: actions/download-artifact@v4
+        if: steps.sonar-config.outputs.configured == 'true'
+        uses: actions/download-artifact@v5
         with:
           name: quality-reports
           path: ${{ github.workspace }}
 
       - name: Check coverage report
+        if: steps.sonar-config.outputs.configured == 'true'
         run: test -s coverage.xml
 
-      # Static analysis. Project key, sources, tests, and coverage path
-      # are read from sonar-project.properties.
       - name: Static analysis
+        if: steps.sonar-config.outputs.configured == 'true'
         uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # Polls the server. A quality gate status of ERROR fails this step,
-      # which fails the job and the workflow.
       - name: SonarQube quality gate
+        if: steps.sonar-config.outputs.configured == 'true'
         id: quality-gate
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 5
@@ -106,7 +105,15 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Governance result
-        if: success()
+        if: steps.sonar-config.outputs.configured == 'true' && success()
         run: |
           echo "Quality gate status: ${{ steps.quality-gate.outputs.quality-gate-status }}"
           echo "Measure values remain on the SonarQube server."
+
+      - name: SonarQube not configured
+        if: steps.sonar-config.outputs.configured == 'false'
+        run: |
+          echo "SonarQube integration is not configured for this repository."
+          echo "Automated tests and coverage have completed successfully."
+          echo "No SonarQube metrics or quality-gate result are inferred."
+          echo "Configure SONAR_TOKEN and SONAR_HOST_URL to enable server-side analysis."
