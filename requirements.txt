@@ -1,0 +1,5 @@
+# Runtime dependencies for the governance dashboard and policy engine.
+streamlit
+pandas
+plotly
+PyYAML

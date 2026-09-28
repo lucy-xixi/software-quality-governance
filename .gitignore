@@ -1,0 +1,24 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Coverage outputs
+.coverage
+htmlcov/
+coverage.xml
+
+# SonarQube scanner working files
+.scannerwork/
+
+# Local environment files
+.env
+
+# Editor settings
+.idea/
+.vscode/

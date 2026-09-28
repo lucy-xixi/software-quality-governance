@@ -1,0 +1,5 @@
+# Path style for the Cobertura report imported by SonarQube.
+# relative_files does not change which lines are covered.
+[run]
+relative_files = True
+source = src

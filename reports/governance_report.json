@@ -1,0 +1,78 @@
+{
+  "project": {
+    "name": "Software Quality and Governance Dashboard",
+    "key": "software-quality-governance"
+  },
+  "quality_gate": "FAIL",
+  "release_readiness": "NOT_READY",
+  "risk": null,
+  "coverage": 81.69,
+  "statements_covered": 357,
+  "statements_valid": 437,
+  "bugs": {
+    "critical": null,
+    "major": null
+  },
+  "vulnerabilities": {
+    "critical": null,
+    "high": null
+  },
+  "duplicated_lines": null,
+  "code_smells": null,
+  "conditions": [
+    {
+      "metric": "coverage",
+      "status": "PASSED",
+      "actual": 81.69,
+      "threshold": 80,
+      "risk": null
+    },
+    {
+      "metric": "bugs.critical",
+      "status": "UNAVAILABLE",
+      "actual": null,
+      "threshold": 0,
+      "risk": null
+    },
+    {
+      "metric": "bugs.major",
+      "status": "UNAVAILABLE",
+      "actual": null,
+      "threshold": 0,
+      "risk": null
+    },
+    {
+      "metric": "vulnerabilities.critical",
+      "status": "UNAVAILABLE",
+      "actual": null,
+      "threshold": 0,
+      "risk": null
+    },
+    {
+      "metric": "vulnerabilities.high",
+      "status": "UNAVAILABLE",
+      "actual": null,
+      "threshold": 0,
+      "risk": null
+    },
+    {
+      "metric": "duplication",
+      "status": "UNAVAILABLE",
+      "actual": null,
+      "threshold": 5,
+      "risk": null
+    }
+  ],
+  "failed_conditions": [],
+  "unavailable_conditions": [
+    "bugs.critical",
+    "bugs.major",
+    "vulnerabilities.critical",
+    "vulnerabilities.high",
+    "duplication"
+  ],
+  "recommended_actions": [
+    "Run a SonarQube analysis to obtain static-analysis and duplication metrics.",
+    "Review the SonarQube server-side quality gate before release evaluation."
+  ]
+}

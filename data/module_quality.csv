@@ -1,0 +1,14 @@
+module_id,module_name,team,lines_of_code,bug_count,coverage_percent,review_status,owner,recorded_on
+billing-api,Billing API, payments ,4200,6,82.5,reviewed,A. Chen,2026-09-01
+billing-ui, Billing UI ,payments,1800,4,61.0,Reviewed,,2026-09-02
+ledger,Ledger,payments,9100,21,74.0,pending,M. Ortiz,2026-08-18
+notify,Notify,platform,2500,2,91.0,reviewed,S. Patel,2026-09-10
+auth,Auth,platform,6400,11,55.0,pending,,2026-07-30
+search,Search,platform,3300,3,88,in review,L. Nguyen,2026-09-12
+exports,Exports,data,1500,1,79.5,waived,R. Singh,2026-06-01
+catalog,Catalog,commerce,2750,8,68.0,reviewed,J. Kim,2026-09-05
+invoicing,Invoicing,payments,800,9,85,reviewed,A. Chen,2026-09-15
+,Ghost,commerce,1000,1,90,reviewed,J. Kim,2026-09-05
+pricing,Pricing,commerce,0,2,80,reviewed,J. Kim,2026-09-06
+recs,Recs,data,4800,9,140,reviewed,R. Singh,2026-09-09
+admin,Admin,platform,1200,0,96,reviewed,S. Patel,13/09/2026

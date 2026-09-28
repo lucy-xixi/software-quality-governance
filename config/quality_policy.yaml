@@ -1,0 +1,21 @@
+# Local governance policy for this portfolio project.
+# These numbers are not the SonarQube server quality gate.
+# Comparisons are inclusive: coverage passes at or above the minimum,
+# and bug, vulnerability, and duplication values pass at or below the limit.
+quality_policy:
+  coverage:
+    minimum: 80
+
+  bugs:
+    critical: 0
+    major: 0
+
+  vulnerabilities:
+    critical: 0
+    high: 0
+
+  duplication:
+    maximum: 5
+
+  quality_gate:
+    required: true
